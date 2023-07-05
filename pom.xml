@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.datastax.jdbc</groupId>
+	<artifactId>ing-jdbc-wrapper-shaded</artifactId>
+	<version>4.9.0</version>
+	<name>ing-jdbc-wrapper-shaded</name>
+
+	<properties>
+		<java.version>11</java.version>
+		<logback.version>1.2.3</logback.version>
+		<spring.version>5.1.9.RELEASE</spring.version>
+		<junit-jupiter.version>5.5.1</junit-jupiter.version>
+		<version.maven.plugin.compiler>3.8.1</version.maven.plugin.compiler>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.ing.data</groupId>
+			<artifactId>cassandra-jdbc-wrapper</artifactId>
+			<version>4.9.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.maven.plugin.compiler}</version>
+				<configuration>
+					<release>${java.version}</release>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.6.0</version>
+				<configuration>
+					<finalName>ing-jdbc-wrapper-shaded-${project.version}</finalName>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>assemble-all</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
