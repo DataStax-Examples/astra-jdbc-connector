@@ -4,13 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.datastax.jdbc</groupId>
     <artifactId>astra-jdbc-wapper</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <name>ing-jdbc-wrapper-shaded</name>
 
     <properties>
-        <astra-sdk.version>0.6.3</astra-sdk.version>
-        <cassandra-driver.version>4.16.0</cassandra-driver.version>
-        <cassandra-jdbc.version>4.9.0</cassandra-jdbc.version>
+        <java.version>1.8</java.version>
+        <astra-sdk.version>0.6.11</astra-sdk.version>
+        <cassandra-driver.version>4.17.0</cassandra-driver.version>
+        <cassandra-jdbc.version>4.9.1</cassandra-jdbc.version>
 
         <slf4j.version>2.0.7</slf4j.version>
         <logback.version>1.4.8</logback.version>
@@ -76,8 +77,8 @@
               <artifactId>maven-compiler-plugin</artifactId>
               <version>${maven-compiler-plugin.version}</version>
               <configuration>
-                  <source>11</source>
-                  <target>11</target>
+                  <source>${java.version}</source>
+                  <target>${java.version}</target>
                   <showWarnings>false</showWarnings>
               </configuration>
             </plugin>

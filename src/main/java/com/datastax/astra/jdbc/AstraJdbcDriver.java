@@ -5,10 +5,10 @@ import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.CqlSessionBuilder;
 import com.dtsx.astra.sdk.db.AstraDbClient;
 import com.dtsx.astra.sdk.db.DatabaseClient;
-import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.ing.data.cassandra.jdbc.CassandraConnection;
+import com.ing.data.cassandra.jdbc.utils.DriverUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.ing.data.cassandra.jdbc.Utils.getDriverProperty;
-import static com.ing.data.cassandra.jdbc.Utils.parseVersion;
+import static com.ing.data.cassandra.jdbc.utils.DriverUtil.getDriverProperty;
 
 /**
  * This Class would wrap the DataStax Java Driver for Apache Cassandra.
@@ -51,13 +50,9 @@ public class AstraJdbcDriver implements java.sql.Driver {
      * Reuse Session when possible.
      */
     final LoadingCache<AstraJdbcUrl, CqlSession > cachedSessions = Caffeine.newBuilder()
-            .build(new CacheLoader<AstraJdbcUrl, CqlSession>() {
-                @Override
-                public CqlSession load(final AstraJdbcUrl jdbcUrl)
-                throws Exception {
-                    LOGGER.info("Creating a new Session for db '" + jdbcUrl.getDatabaseId() + "'");
-                    return buildSession(jdbcUrl);
-                }
+            .build(jdbcUrl -> {
+                LOGGER.info("Creating a new Session for db '" + jdbcUrl.getDatabaseId() + "'");
+                return buildSession(jdbcUrl);
             });
 
     public static void register() {}
@@ -102,7 +97,7 @@ public class AstraJdbcDriver implements java.sql.Driver {
      */
     public Connection connect(String url, Properties properties) throws SQLException {
         AstraJdbcUrl jdbcUrl = new AstraJdbcUrl(url, properties);
-        return new CassandraConnection( this.cachedSessions.get(jdbcUrl),
+        return new CassandraConnection(this.cachedSessions.get(jdbcUrl),
                 jdbcUrl.getKeyspace(),
                 jdbcUrl.getConsistencyLevel(),
                 jdbcUrl.isDebug(),
@@ -131,13 +126,13 @@ public class AstraJdbcDriver implements java.sql.Driver {
     /** {@inheritDoc} */
     @Override
     public int getMajorVersion() {
-        return parseVersion(getDriverProperty("driver.version"), 0);
+        return DriverUtil.parseVersion(getDriverProperty("driver.version"), 0);
     }
 
     /** {@inheritDoc} */
     @Override
     public int getMinorVersion() {
-        return parseVersion(getDriverProperty("driver.version"), 1);
+        return DriverUtil.parseVersion(getDriverProperty("driver.version"), 1);
     }
 
     /** {@inheritDoc} */

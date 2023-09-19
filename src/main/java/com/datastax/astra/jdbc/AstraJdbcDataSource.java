@@ -28,6 +28,10 @@ public class AstraJdbcDataSource implements ConnectionPoolDataSource, javax.sql.
     private String consistencyLevel;
     private Integer requestTimeout;
 
+    public AstraJdbcDataSource(String token, String database, String keyspace) {
+       this("token", token, database, keyspace);
+    }
+
     public AstraJdbcDataSource(String user, String password, String database, String keyspace) {
         this.user = user;
         this.password = password;
